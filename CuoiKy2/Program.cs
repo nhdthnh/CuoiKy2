@@ -1,17 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Security.Cryptography.X509Certificates;
+using System.Text.RegularExpressions;
 
 class TreeNode
 {
-    public int id;
-    public string ho;
-    public string ten;
-    public string phai;
-    public string trangThai;
-    public TreeNode left;
-    public TreeNode right;
-    public List<string> borrowedBooks;
+    public int id; // ID của nút
+    public string ho; // Họ của nút
+    public string ten; // Tên của nút
+    public string phai; // Giới tính của nút
+    public string trangThai; // Trạng thái của nút
+    public TreeNode left; // Con trái của nút
+    public TreeNode right; // Con phải của nút
+    public List<string> borrowedBooks; // Danh sách sách mượn của nút
+
+    // Hàm khởi tạo cho lớp TreeNode
     public TreeNode(int id, string ho, string ten, string phai, string trangThai)
     {
         this.id = id;
@@ -25,204 +28,166 @@ class TreeNode
     }
 }
 
-    class BinarySearchTree
-    {
-    private TreeNode root;
+class BinarySearchTree
+{
+    private TreeNode root; // Gốc của cây nhị phân tìm kiếm
 
+    // Hàm khởi tạo cho lớp BinarySearchTree
     public BinarySearchTree()
-{
-    this.root = null;
-}
-
-public void Insert(int id, string ho, string ten, string phai, string trangThai)
-{
-    Random rnd = new Random();
-    int newId = rnd.Next(10000, 99999);
-    TreeNode newNode = new TreeNode(newId, ho, ten, phai, trangThai);
-    if (root == null)
     {
-        root = newNode;
-        return;
-    }
-    TreeNode current = root;
-    while (true)
-    {
-        if (newId < current.id)
-        {
-            if (current.left == null)
-            {
-                current.left = newNode;
-                break;
-            }
-            current = current.left;
-        }
-        else
-        {
-            if (current.right == null)
-            {
-                current.right = newNode;
-                break;
-            }
-            current = current.right;
-        }
-    }
-}
-
-
-    public void Delete(int id)
-    {
-        root = DeleteHelper(root, id);
+        this.root = null;
     }
 
-    private TreeNode DeleteHelper(TreeNode node, int id)
+    // Hàm chèn một nút mới vào cây nhị phân tìm kiếm
+    public void Insert(int id, string ho, string ten, string phai, string trangThai)
     {
-        if (node == null)
+        Random rnd = new Random();
+        int newId = rnd.Next(10000, 99999); // Tạo một ID ngẫu nhiên cho nút mới
+        TreeNode newNode = new TreeNode(newId, ho, ten, phai, trangThai); // Tạo một nút mới
+        if (root == null) // Nếu cây rỗng
         {
-            return null;
+            root = newNode; // Đặt nút mới làm gốc của cây
+            return;
         }
-        if (id < node.id)
+        TreeNode current = root; // Bắt đầu từ gốc của cây
+        while (true)
         {
-            node.left = DeleteHelper(node.left, id);
-        }
-        else if (id > node.id)
-        {
-            node.right = DeleteHelper(node.right, id);
-        }
-        else
-        {
-            if (node.left == null && node.right == null)
+            if (newId < current.id) // Nếu ID của nút mới nhỏ hơn ID của nút hiện tại
             {
-                node = null;
+                if (current.left == null) // Nếu con trái của nút hiện tại rỗng
+                {
+                    current.left = newNode; // Đặt nút mới làm con trái của nút hiện tại
+                    break;
+                }
+                current = current.left; // Di chuyển sang con trái của nút hiện tại
             }
-            else if (node.left == null)
+            else // Nếu ID của nút mới lớn hơn hoặc bằng ID của nút hiện tại
             {
-                node = node.right;
-            }
-            else if (node.right == null)
-            {
-                node = node.left;
-            }
-            else
-            {
-                TreeNode minNode = FindMinNode(node.right);
-                node.id = minNode.id;
-                node.ho = minNode.ho;
-                node.ten = minNode.ten;
-                node.phai = minNode.phai;
-                node.trangThai = minNode.trangThai;
-                node.right = DeleteHelper(node.right, minNode.id);
+                if (current.right == null) // Nếu con phải của nút hiện tại rỗng
+                {
+                    current.right = newNode; // Đặt nút mới làm con phải của nút hiện tại
+                    break;
+                }
+                current = current.right; // Di chuyển sang con phải của nút hiện tại
             }
         }
-        return node;
     }
 
+    // Hàm tìm nút có giá trị nhỏ nhất trong cây con có gốc là node
     private TreeNode FindMinNode(TreeNode node)
     {
-        while (node.left != null)
+        while (node.left != null) // Trong khi con trái của nút hiện tại không rỗng
         {
-            node = node.left;
+            node = node.left; // Di chuyển sang con trái của nút hiện tại
         }
-        return node;
+        return node; // Trả về nút có giá trị nhỏ nhất
     }
-
+    // Hàm in ra các nút trong cây con có gốc là node theo thứ tự tăng dần của tên
     private void PrintByNameHelper(TreeNode node)
     {
-        if (node.left != null)
+        if (node.left != null) // Nếu con trái của nút hiện tại không rỗng
         {
-            PrintByNameHelper(node.left);
+            PrintByNameHelper(node.left); // In ra các nút trong cây con có gốc là con trái của nút hiện tại
         }
-        Console.WriteLine("ID: {0}, Ho: {1}, Ten: {2}", node.id, node.ho, node.ten);
-        if (node.right != null)
+        Console.WriteLine("ID: {0}, Ho: {1}, Ten: {2}", node.id, node.ho, node.ten); // In ra thông tin của nút hiện tại
+        if (node.right != null) // Nếu con phải của nút hiện tại không rỗng
         {
-            PrintByNameHelper(node.right);
+            PrintByNameHelper(node.right); // In ra các nút trong cây con có gốc là con phải của nút hiện tại
         }
     }
 
+    // Hàm in ra các nút trong cây theo thứ tự tăng dần của tên
     public void PrintByNameAscending()
     {
-        if (root != null)
+        if (root != null) // Nếu cây không rỗng
         {
-            PrintByNameAscendingHelper(root);
+            PrintByNameAscendingHelper(root); // In ra các nút trong cây có gốc là root
         }
     }
 
+    // Hàm in ra các nút trong cây con có gốc là node theo thứ tự tăng dần của tên
     private void PrintByNameAscendingHelper(TreeNode node)
     {
-        if (node.left != null)
+        if (node.left != null) // Nếu con trái của nút hiện tại không rỗng
         {
-            PrintByNameAscendingHelper(node.left);
+            PrintByNameAscendingHelper(node.left); // In ra các nút trong cây con có gốc là con trái của nút hiện tại
         }
-        Console.WriteLine("ID: {0}, Ho: {1}, Ten: {2}", node.id, node.ho, node.ten);
-        if (node.right != null)
+        Console.WriteLine("ID: {0}, Ho: {1}, Ten: {2}", node.id, node.ho, node.ten); // In ra thông tin của nút hiện tại
+        if (node.right != null) // Nếu con phải của nút hiện tại không rỗng
         {
-            PrintByNameAscendingHelper(node.right);
+            PrintByNameAscendingHelper(node.right); // In ra các nút trong cây con có gốc là con phải của nút hiện tại
         }
     }
 
-
-
+    // Hàm duyệt cây theo thứ tự giữa và lưu kết quả vào danh sách nodes
     private void InOrderTraversal(TreeNode node, List<TreeNode> nodes)
     {
-        if (node == null)
+        if (node == null) // Nếu cây rỗng
         {
             return;
         }
 
-        InOrderTraversal(node.left, nodes);
-        nodes.Add(node);
-        InOrderTraversal(node.right, nodes);
+        InOrderTraversal(node.left, nodes); // Duyệt cây con có gốc là con trái của nút hiện tại và lưu kết quả vào danh sách nodes
+        nodes.Add(node); // Thêm nút hiện tại vào danh sách nodes
+        InOrderTraversal(node.right, nodes); // Duyệt cây con có gốc là con phải của nút hiện tại và lưu kết quả vào danh sách nodes
     }
-
+    // Hàm in ra các nút trong cây theo thứ tự tăng dần của ID
     public void PrintByID()
     {
-        if (root != null)
+        if (root != null) // Nếu cây không rỗng
         {
-            PrintByIDHelper(root);
+            PrintByIDHelper(root); // In ra các nút trong cây có gốc là root
         }
     }
+
+    // Hàm in ra các nút trong cây con có gốc là node theo thứ tự tăng dần của ID
     private void PrintByIDHelper(TreeNode node)
     {
-        if (node.left != null)
+        if (node.left != null) // Nếu con trái của nút hiện tại không rỗng
         {
-            PrintByIDHelper(node.left);
+            PrintByIDHelper(node.left); // In ra các nút trong cây con có gốc là con trái của nút hiện tại
         }
-        Console.WriteLine("ID: {0}, Ho: {1}, Ten: {2}", node.id, node.ho, node.ten);
-        if (node.right != null)
+        Console.WriteLine("ID: {0}, Ho: {1}, Ten: {2}", node.id, node.ho, node.ten); // In ra thông tin của nút hiện tại
+        if (node.right != null) // Nếu con phải của nút hiện tại không rỗng
         {
-            PrintByIDHelper(node.right);
+            PrintByIDHelper(node.right); // In ra các nút trong cây con có gốc là con phải của nút hiện tại
         }
     }
 }
 
 public class Sach
 {
+    public int MaSach { get; private set; } // Mã sách
+    public string TenSach { get; set; } // Tên sách
+    public string TacGia { get; set; } // Tác giả
+    public int NamXuatBan { get; set; } // Năm xuất bản
+    public string TheLoai { get; set; } // Thể loại
+    public int SoTrang { get; set; } // Số trang
+    public int TrangThai { get; set; } // Trạng thái (0: cho mượn được, 1: đã có độc giả mượn, 2: sách đã thanh lý)
+    public string ViTri { get; set; } // Vị trí
+    public string DocGiaMuon { get; set; } // Tên độc giả mượn sách
 
-    public int MaSach { get; private set; }
-    public string TenSach { get; set; }
-    public string TacGia { get; set; }
-    public int NamXuatBan { get; set; }
-    public string TheLoai { get; set; }
-    public int SoTrang { get; set; }
-    public int TrangThai { get; set; } // 0 : cho mượn được, 1 : đã có độc giả mượn, 2 : sách đã thanh lý
-    public string ViTri { get; set; }
-
-    public Sach(string tenSach, string tacGia, int namXuatBan, int soTrang, string theLoai, string viTri, int trangThai)
+    // Hàm khởi tạo cho lớp Sach
+    public Sach(string tenSach, string tacGia, int namXuatBan, int soTrang, string theLoai, string viTri, int trangThai, string docGiaMuon = null)
     {
-        MaSach = new Random().Next(100000, 999999);
+        MaSach = new Random().Next(100000, 999999); // Tạo một mã sách ngẫu nhiên
         TenSach = tenSach;
         TacGia = tacGia;
         NamXuatBan = namXuatBan;
-        SoTrang = soTrang;
         TheLoai = theLoai;
-        ViTri = viTri;
+        SoTrang = soTrang;
         TrangThai = trangThai;
+        ViTri = viTri;
+        DocGiaMuon = docGiaMuon;
     }
 }
+
 public class Node
 {
-    public Sach data;
-    public Node next;
+    public Sach data; // Dữ liệu của nút (một đối tượng Sach)
+    public Node next; // Con trỏ tới nút tiếp theo
 
+    // Hàm khởi tạo cho lớp Node
     public Node(Sach data)
     {
         this.data = data;
@@ -232,8 +197,9 @@ public class Node
 
 public class ThuVien
 {
-    private Node head = null;
+    private Node head = null; // Đầu của danh sách liên kết
 
+    // Hàm thêm một cuốn sách mới vào thư viện
     public void ThemSach()
     {
         Console.Write("Nhap ten sach: ");
@@ -250,75 +216,77 @@ public class ThuVien
         int trangThai = int.Parse(Console.ReadLine());
         Console.Write("Nhap vi tri: ");
         string viTri = Console.ReadLine();
+        Sach sach = new Sach(tenSach, tacGia, namXuatBan, soTrang, theLoai, viTri, trangThai); // Tạo một đối tượng Sach mới
+        Node newNode = new Node(sach); // Tạo một nút mới chứa đối tượng Sach mới
 
-        Sach sach = new Sach (tenSach, tacGia, namXuatBan, soTrang, theLoai, viTri, trangThai);
-        Node newNode = new Node(sach);
-
-        if (head == null)
+        if (head == null) // Nếu danh sách liên kết rỗng
         {
-            head = newNode;
+            head = newNode; // Đặt nút mới làm đầu của danh sách liên kết
         }
-        else
+        else // Nếu danh sách liên kết không rỗng
         {
-            Node current = head;
-            while (current.next != null)
+            Node current = head; // Bắt đầu từ đầu của danh sách liên kết
+            while (current.next != null) // Trong khi con trỏ tới nút tiếp theo của nút hiện tại không rỗng
             {
-                current = current.next;
+                current = current.next; // Di chuyển sang nút tiếp theo của nút hiện tại
             }
-            current.next = newNode;
+            current.next = newNode; // Đặt nút mới làm con trỏ tới nút tiếp theo của nút cuối cùng trong danh sách liên kết
         }
-
         Console.WriteLine("Them sach thanh cong. Ma sach: {0}", sach.MaSach);
     }
+
+    // Hàm sắp xếp các cuốn sách trong thư viện theo thứ tự tăng dần của tên sách
     public void SortByName()
     {
-        Node current = head;
+        Node current = head; // Bắt đầu từ đầu của danh sách liên kết
         Node index = null;
         Sach temp;
 
-        if (head == null)
+        if (head == null) // Nếu danh sách liên kết rỗng
         {
             return;
         }
         else
         {
-            while (current != null)
+            while (current != null) // Trong khi nút hiện tại không rỗng
             {
                 index = current.next;
 
-                while (index != null)
+                while (index != null) // Trong khi con trỏ tới nút tiếp theo của nút hiện tại không rỗng
                 {
-                    if (string.Compare(current.data.TenSach, index.data.TenSach) > 0)
+                    if (string.Compare(current.data.TenSach, index.data.TenSach) > 0) // Nếu tên sách của nút hiện tại lớn hơn tên sách của nút tiếp theo
                     {
                         temp = current.data;
                         current.data = index.data;
                         index.data = temp;
                     }
-
                     index = index.next;
                 }
                 current = current.next;
             }
         }
     }
+    // Hàm in ra danh sách các cuốn sách trong thư viện
     public void PrintList()
     {
-        Node current = head;
+        Node current = head; // Bắt đầu từ đầu của danh sách liên kết
 
-        while (current != null)
+        while (current != null) // Trong khi nút hiện tại không rỗng
         {
-            Console.WriteLine("Ma sach: {0}, Ten sach: {1}, Tac gia: {2}", current.data.MaSach, current.data.TenSach, current.data.TacGia);
-            current = current.next;
+            Console.WriteLine("Ma sach: {0}, Ten sach: {1}, Tac gia: {2}", current.data.MaSach, current.data.TenSach, current.data.TacGia); // In ra thông tin của nút hiện tại
+            current = current.next; // Di chuyển sang nút tiếp theo của nút hiện tại
         }
     }
+
+    // Hàm tìm kiếm sách theo tên sách
     public void TimSachTheoTen(string tenSach)
     {
-        Node current = head;
+        Node current = head; // Bắt đầu từ đầu của danh sách liên kết
         bool found = false;
 
-        while (current != null)
+        while (current != null) // Trong khi nút hiện tại không rỗng
         {
-            if (current.data.TenSach == tenSach)
+            if (current.data.TenSach == tenSach) // Nếu tên sách của nút hiện tại trùng với tên sách cần tìm
             {
                 Console.WriteLine("Thong tin sach:");
                 Console.WriteLine("Ma sach: {0}", current.data.MaSach);
@@ -329,14 +297,14 @@ public class ThuVien
                 Console.WriteLine("Trang thai: {0}", current.data.TrangThai);
                 Console.WriteLine("Vi tri: {0}", current.data.ViTri);
                 Console.WriteLine("Cac ma sach con trong thu vien:");
-                Node temp = head;
-                while (temp != null)
+                Node temp = head; // Bắt đầu từ đầu của danh sách liên kết
+                while (temp != null) // Trong khi nút hiện tại không rỗng
                 {
-                    if (temp.data.TenSach == tenSach && temp.data.MaSach != current.data.MaSach)
+                    if (temp.data.TenSach == tenSach && temp.data.MaSach != current.data.MaSach) // Nếu tên sách của nút hiện tại trùng với tên sách cần tìm và mã sách của nút hiện tại khác với mã sách của nút đã tìm thấy trước đó
                     {
-                        Console.WriteLine("{0}", temp.data.MaSach);
+                        Console.WriteLine("{0}", temp.data.MaSach); // In ra mã sách của nút hiện tại
                     }
-                    temp = temp.next;
+                    temp = temp.next; // Di chuyển sang nút tiếp theo của nút hiện tại
                 }
 
                 found = true;
@@ -345,61 +313,112 @@ public class ThuVien
             current = current.next;
         }
 
-        if (!found)
+        if (!found) // Nếu không tìm thấy cuốn sách có tên trùng với tên sách cần tìm
         {
             Console.WriteLine("Khong tim thay sach co ten \"{0}\" trong thu vien.", tenSach);
         }
     }
+
+    // Hàm thay đổi trạng thái của cuốn sách có tên trùng với tên sách cần tìm
     public void ThayDoiTrangThai(string tenSach, int trangThaiMoi)
     {
-        Node current = head;
+        Node current = head; // Bắt đầu từ đầu của danh sách liên kết
         bool found = false;
 
-        while (current != null)
+        while (current != null) // Trong khi nút hiện tại không rỗng
         {
-            if (current.data.TenSach == tenSach)
+            if (current.data.TenSach == tenSach) // Nếu tên sách của nút hiện tại trùng với tên sách cần tìm
             {
-                current.data.TrangThai = trangThaiMoi;
+                current.data.TrangThai = trangThaiMoi; // Thay đổi trạng thái của nút hiện tại
                 Console.WriteLine("Thay doi trang thai sach thanh cong.");
                 found = true;
                 break;
             }
-            current = current.next;
+            current = current.next; // Di chuyển sang nút tiếp theo của nút hiện tại
         }
 
-        if (!found)
+        if (!found) // Nếu không tìm thấy cuốn sách có tên trùng với tên sách cần tìm
         {
             Console.WriteLine("Khong tim thay sach co ten {0} trong thu vien.", tenSach);
         }
-
     }
+
+    // Hàm thay đổi vị trí của cuốn sách có tên trùng với tên sách cần tìm
     public void ThayDoiViTri(string tenSach, string viTriMoi)
     {
-        Node current = head;
+        Node current = head; // Bắt đầu từ đầu của danh sách liên kết
         bool found = false;
 
-        while (current != null)
+        while (current != null) // Trong khi nút hiện tại không rỗng
         {
-            if (current.data.TenSach == tenSach)
+            if (current.data.TenSach == tenSach) // Nếu tên sách của nút hiện tại trùng với tên sách cần tìm
             {
-                current.data.ViTri = viTriMoi;
+                current.data.ViTri = viTriMoi; // Thay đổi vị trí của nút hiện tại
                 Console.WriteLine("Thay doi vi tri sach thanh cong.");
                 found = true;
                 break;
             }
-            current = current.next;
+            current = current.next; // Di chuyển sang nút tiếp theo của nút hiện tại
         }
 
-        if (!found)
+        if (!found) // Nếu không tìm thấy cuốn sách có tên trùng với tên sách cần tìm
         {
             Console.WriteLine("Khong tim thay sach co ten {0} trong thu vien.", tenSach);
         }
-
     }
+
 
 }
 
+/*class MuonTra
+{
+    public string MaSach { get; set; }
+    public string MaDocGia { get; set; }
+    public DateTime NgayMuon { get; set; }
+    public DateTime NgayTra { get; set; }
+    public int TrangThai { get; set; }
+}
+public class MuonTraSach
+{
+    List<MuonTra> danhSachMuonTra = new List<MuonTra>();
+    public void MuonTra()
+    {
+        // Nhập vào mã độc giả
+        Console.Write("Nhập mã độc giả: ");
+        string maDocGia = Console.ReadLine();
 
+        // Liệt kê các sách mà độc giả đang mượn
+        int soLuongSachMuon = 0;
+        foreach (MuonTra muonTra in danhSachMuonTra)
+        {
+            if (muonTra.MaDocGia == maDocGia && muonTra.TrangThai == 0)
+            {
+                // Đếm số lượng sách mượn
+                soLuongSachMuon++;
+
+                // Kiểm tra sách có quá hạn hay không
+                DateTime ngayHienTai = DateTime.Now;
+                TimeSpan thoiGianMuon = ngayHienTai - muonTra.NgayMuon;
+                if (thoiGianMuon.TotalDays > 15)
+                {
+                    Console.WriteLine("{0} (Quá hạn)", muonTra.MaSach);
+                }
+                else
+                {
+                    Console.WriteLine(muonTra.MaSach);
+                }
+            }
+        }
+
+        // Kiểm tra số lượng sách mượn đã đạt giới hạn tối đa hay chưa
+        if (soLuongSachMuon >= 3)
+        {
+            Console.WriteLine("Đã mượn tối đa số lượng sách");
+        }
+
+        Console.ReadKey();
+    }
+}*/
 class Program
 {
     BinarySearchTree bst = new BinarySearchTree();
@@ -416,7 +435,7 @@ class Program
             string gioitinh = Console.ReadLine();
             Console.WriteLine("Nhap trang thai the: ");
             string trangthai = Console.ReadLine();
-            bst.Insert(rnd.Next(1000, 9999), ho, ten,gioitinh, trangthai);
+            bst.Insert(rnd.Next(1000, 9999), ho, ten, gioitinh, trangthai);
             break;
         }
     }
@@ -445,6 +464,8 @@ class Program
             Console.WriteLine("4. Them dau sach.");
             Console.WriteLine("5. In ra cac dau sach theo ten.");
             Console.WriteLine("6. Tim sach theo ten.");
+            Console.WriteLine("7. Thay doi trang thai sach.");
+            Console.WriteLine("8. Thay doi vi tri sach.");
             Console.Write("Chon: ");
             int choice = int.Parse(Console.ReadLine()); //Parse là một phương thức được sử dụng để chuyển đổi một chuỗi thành một kiểu dữ liệu số khác như int, long, double
             switch (choice)
