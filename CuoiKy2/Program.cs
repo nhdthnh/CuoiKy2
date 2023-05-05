@@ -435,9 +435,9 @@ class Program
             string ho = Console.ReadLine();
             Console.WriteLine("Nhap ten: ");
             string ten = Console.ReadLine();
-            Console.WriteLine("Nhap gioi tinh: ");
+            Console.WriteLine("Nhap gioi tinh (Nam/Nu): ");
             string gioitinh = Console.ReadLine();
-            Console.WriteLine("Nhap trang thai the: ");
+            Console.WriteLine("Nhap trang thai the (1: the mo / 0: the dang bi khoa): ");
             string trangthai = Console.ReadLine();
             bst.Insert(rnd.Next(1000, 9999), ho, ten, gioitinh, trangthai);
             break;
