@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection.PortableExecutable;
 using System.Security.Cryptography.X509Certificates;
 using System.Text.RegularExpressions;
 
-class TreeNode
+public class TreeNode
 {
     public int id; // ID của nút
     public string ho; // Họ của nút
@@ -28,9 +29,9 @@ class TreeNode
     }
 }
 
-class BinarySearchTree
+public class BinarySearchTree
 {
-    private TreeNode root; // Gốc của cây nhị phân tìm kiếm
+     private TreeNode root; // Gốc của cây nhị phân tìm kiếm
 
     // Hàm khởi tạo cho lớp BinarySearchTree
     public BinarySearchTree()
@@ -39,7 +40,7 @@ class BinarySearchTree
     }
 
     // Hàm chèn một nút mới vào cây nhị phân tìm kiếm
-    public void Insert(int id, string ho, string ten, string phai, string trangThai)
+    public int Insert(int id, string ho, string ten, string phai, string trangThai)
     {
         Random rnd = new Random();
         int newId = rnd.Next(10000, 99999); // Tạo một ID ngẫu nhiên cho nút mới
@@ -47,7 +48,7 @@ class BinarySearchTree
         if (root == null) // Nếu cây rỗng
         {
             root = newNode; // Đặt nút mới làm gốc của cây
-            return;
+            return newId;
         }
         TreeNode current = root; // Bắt đầu từ gốc của cây
         while (true)
@@ -71,6 +72,7 @@ class BinarySearchTree
                 current = current.right; // Di chuyển sang con phải của nút hiện tại
             }
         }
+        return newId;
     }
 
     // Hàm tìm nút có giá trị nhỏ nhất trong cây con có gốc là node
@@ -153,8 +155,26 @@ class BinarySearchTree
             PrintByIDHelper(node.right); // In ra các nút trong cây con có gốc là con phải của nút hiện tại
         }
     }
+    // Phương thức tìm kiếm nút theo ID
+    // Tìm kiếm thông tin độc giả trong cây nhị phân tìm kiếm
+    public TreeNode Search(int maDocGia)
+    {
+        TreeNode current = root;
+
+        while (current != null && current.id != maDocGia)
+        {
+            if (maDocGia < current.id)
+                current = current.left;
+            else
+                current = current.right;
+        }
+
+        return current;
+    }
 }
 
+
+//Sáchhh
 public class Sach
 {
     public int MaSach { get; private set; } // Mã sách
@@ -166,6 +186,9 @@ public class Sach
     public int TrangThai { get; set; } // Trạng thái (0: cho mượn được, 1: đã có độc giả mượn, 2: sách đã thanh lý)
     public string ViTri { get; set; } // Vị trí
     public string DocGiaMuon { get; set; } // Tên độc giả mượn sách
+    public DateTime NgayMuon { get; set; }
+    public DateTime NgayTra { get; set; }
+    public int SoLuong { get; set; } //Thêm thuộc tính số lượng sách
 
     // Hàm khởi tạo cho lớp Sach
     public Sach(string tenSach, string tacGia, int namXuatBan, int soTrang, string theLoai, string viTri, int trangThai, string docGiaMuon = null)
@@ -180,9 +203,43 @@ public class Sach
         ViTri = viTri;
         DocGiaMuon = docGiaMuon;
     }
+    public bool MuonSach(int maDocGia, int maSach)
+    {
+        BinarySearchTree bstDocGia = new BinarySearchTree();
+        TreeNode docGia = bstDocGia.Search(maDocGia);
+        if (docGia == null || docGia.trangThai == "0" || docGia.borrowedBooks.Count >= 3)
+            return false;
+        if (TrangThai == 0)
+        {
+            TrangThai = 1;
+            DocGiaMuon = docGia.ho + " " + docGia.ten;
+            NgayMuon = DateTime.Now;
+            docGia.borrowedBooks.Add(maSach.ToString());
+            return true;
+        }
+        return false;
+    }
+    public bool TraSach(int maDocGia, int maSach)
+    {
+        BinarySearchTree bstDocGia = new BinarySearchTree();
+        TreeNode docGia = bstDocGia.Search(maDocGia);
+        if (docGia == null || !docGia.borrowedBooks.Contains(maSach.ToString()))
+            return false;
+
+        if (TrangThai == 1)
+        {
+            TrangThai = 0;
+            DocGiaMuon = null;
+            NgayTra = DateTime.Now;
+            docGia.borrowedBooks.Remove(maSach.ToString());
+            return true;
+        }
+        return false;
+    }
+
 }
 
-public class Node
+    public class Node
 {
     public Sach data; // Dữ liệu của nút (một đối tượng Sach)
     public Node next; // Con trỏ tới nút tiếp theo
@@ -197,10 +254,10 @@ public class Node
 
 public class ThuVien
 {
-    private Node head = null; // Đầu của danh sách liên kết
+    public Node head = null; // Đầu của danh sách liên kết
 
     // Hàm thêm một cuốn sách mới vào thư viện
-    public void ThemSach()
+    public Sach ThemSach()
     {
         Console.Write("Nhap ten sach: ");
         string tenSach = Console.ReadLine();
@@ -233,6 +290,7 @@ public class ThuVien
             current.next = newNode; // Đặt nút mới làm con trỏ tới nút tiếp theo của nút cuối cùng trong danh sách liên kết
         }
         Console.WriteLine("Them sach thanh cong. Ma sach: {0}", sach.MaSach);
+        return sach;
     }
 
     // Hàm sắp xếp các cuốn sách trong thư viện theo thứ tự tăng dần của tên sách
@@ -366,64 +424,24 @@ public class ThuVien
             Console.WriteLine("Khong tim thay sach co ten {0} trong thu vien.", tenSach);
         }
     }
-
-
-}
-
-
-
-
-//cái này để từ từ nha
-/*class MuonTra
-{
-    public string MaSach { get; set; }
-    public string MaDocGia { get; set; }
-    public DateTime NgayMuon { get; set; }
-    public DateTime NgayTra { get; set; }
-    public int TrangThai { get; set; }
-}
-public class MuonTraSach
-{
-    List<MuonTra> danhSachMuonTra = new List<MuonTra>();
-    public void MuonTra()
+    public Sach LaySachTheoMa(int maSach)
     {
-        // Nhập vào mã độc giả
-        Console.Write("Nhập mã độc giả: ");
-        string maDocGia = Console.ReadLine();
-
-        // Liệt kê các sách mà độc giả đang mượn
-        int soLuongSachMuon = 0;
-        foreach (MuonTra muonTra in danhSachMuonTra)
+        Node current = head;
+        while (current != null)
         {
-            if (muonTra.MaDocGia == maDocGia && muonTra.TrangThai == 0)
+            if (current.data.MaSach == maSach)
             {
-                // Đếm số lượng sách mượn
-                soLuongSachMuon++;
-
-                // Kiểm tra sách có quá hạn hay không
-                DateTime ngayHienTai = DateTime.Now;
-                TimeSpan thoiGianMuon = ngayHienTai - muonTra.NgayMuon;
-                if (thoiGianMuon.TotalDays > 15)
-                {
-                    Console.WriteLine("{0} (Quá hạn)", muonTra.MaSach);
-                }
-                else
-                {
-                    Console.WriteLine(muonTra.MaSach);
-                }
+                return current.data;
             }
+            current = current.next;
         }
-
-        // Kiểm tra số lượng sách mượn đã đạt giới hạn tối đa hay chưa
-        if (soLuongSachMuon >= 3)
-        {
-            Console.WriteLine("Đã mượn tối đa số lượng sách");
-        }
-
-        Console.ReadKey();
+        return null;
     }
-}*/
-class Program
+}
+
+
+
+    class Program
 {
     BinarySearchTree bst = new BinarySearchTree();
     Random rnd = new Random();
@@ -458,6 +476,7 @@ class Program
     {
         ThuVien library = new ThuVien();
         Program program = new Program();
+        BinarySearchTree tree = new BinarySearchTree();
         Console.WriteLine(" ");
         while (true)
         {
@@ -507,6 +526,38 @@ class Program
                     Console.WriteLine("Nhap vi tri");
                     string vitri = Console.ReadLine();
                     library.ThayDoiViTri(tenSach, vitri);
+                    break;
+                case 9:
+                    bool tiepTucMuonSach = true;
+                    int maDocGia;
+                    int maSach;
+                    while (tiepTucMuonSach)
+                    {
+                        Console.WriteLine("Nhap ma doc gia: ");
+                        maDocGia = int.Parse(Console.ReadLine());
+                        TreeNode node = tree.Search(maDocGia);
+                        Console.WriteLine("Nhap ma sach: ");
+                        maSach = int.Parse(Console.ReadLine());
+                        library.LaySachTheoMa(maSach);
+                        bool muonThanhCong = library.ThemSach().MuonSach(maDocGia, maSach);
+                        Console.WriteLine(muonThanhCong ? "Muon sach thanh cong" : "Muon sach khong thanh cong");
+                        Console.WriteLine("Ban co muon tiep tuc muon sach? Nhap 'y' de tiep tuc hoac 'n' de thoat.");
+                        string luaChon = Console.ReadLine();
+                        if (luaChon.ToLower() == "n")
+                        {
+                            tiepTucMuonSach = false;
+                        }
+                    }
+                    break;
+
+                case 10:
+                    Console.WriteLine("Nhap ma doc gia: ");
+                    maDocGia = int.Parse(Console.ReadLine());
+                    Console.WriteLine("Nhap ma sach: ");
+                    
+                    library.LaySachTheoMa(maSach);
+                    bool traThanhCong = library.ThemSach().TraSach(maDocGia, maSach);
+                    Console.WriteLine(traThanhCong ? "Tra sach thanh cong" : "Tra sach khong thanh cong");
                     break;
             }
         }
