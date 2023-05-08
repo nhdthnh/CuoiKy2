@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Reflection.PortableExecutable;
 using System.Security.Cryptography.X509Certificates;
 using System.Text.RegularExpressions;
-
 public class TreeNode
 {
     public int id; // ID của nút
@@ -13,7 +12,7 @@ public class TreeNode
     public string trangThai; // Trạng thái của nút
     public TreeNode left; // Con trái của nút
     public TreeNode right; // Con phải của nút
-    public List<string> borrowedBooks; // Danh sách sách mượn của nút
+
 
     // Hàm khởi tạo cho lớp TreeNode
     public TreeNode(int id, string ho, string ten, string phai, string trangThai)
@@ -23,7 +22,6 @@ public class TreeNode
         this.ten = ten;
         this.phai = phai;
         this.trangThai = trangThai;
-        this.borrowedBooks = new List<string>();
         this.left = null;
         this.right = null;
     }
@@ -31,7 +29,7 @@ public class TreeNode
 
 public class BinarySearchTree
 {
-     private TreeNode root; // Gốc của cây nhị phân tìm kiếm
+     public TreeNode root; // Gốc của cây nhị phân tìm kiếm
 
     // Hàm khởi tạo cho lớp BinarySearchTree
     public BinarySearchTree()
@@ -42,18 +40,18 @@ public class BinarySearchTree
     // Hàm chèn một nút mới vào cây nhị phân tìm kiếm
     public int Insert(int id, string ho, string ten, string phai, string trangThai)
     {
-        Random rnd = new Random();
-        int newId = rnd.Next(10000, 99999); // Tạo một ID ngẫu nhiên cho nút mới
-        TreeNode newNode = new TreeNode(newId, ho, ten, phai, trangThai); // Tạo một nút mới
+        Random random = new Random();
+        id = random.Next(100000, 999999); // Tạo id ngẫu nhiên từ 100000 đến 999999
+        TreeNode newNode = new TreeNode(id, ho, ten, phai, trangThai); // Tạo một nút mới
         if (root == null) // Nếu cây rỗng
         {
             root = newNode; // Đặt nút mới làm gốc của cây
-            return newId;
+            return id;
         }
         TreeNode current = root; // Bắt đầu từ gốc của cây
         while (true)
         {
-            if (newId < current.id) // Nếu ID của nút mới nhỏ hơn ID của nút hiện tại
+            if (id < current.id) // Nếu ID của nút mới nhỏ hơn ID của nút hiện tại
             {
                 if (current.left == null) // Nếu con trái của nút hiện tại rỗng
                 {
@@ -62,7 +60,7 @@ public class BinarySearchTree
                 }
                 current = current.left; // Di chuyển sang con trái của nút hiện tại
             }
-            else // Nếu ID của nút mới lớn hơn hoặc bằng ID của nút hiện tại
+            else if (id > current.id) // Nếu ID của nút mới lớn hơn ID của nút hiện tại
             {
                 if (current.right == null) // Nếu con phải của nút hiện tại rỗng
                 {
@@ -71,8 +69,13 @@ public class BinarySearchTree
                 }
                 current = current.right; // Di chuyển sang con phải của nút hiện tại
             }
+            else // Nếu ID của nút mới trùng với ID của nút hiện tại
+            {
+                Console.WriteLine("Doc gia co ID {0} da ton tai.", id);
+                return id;
+            }
         }
-        return newId;
+        return id;
     }
 
     // Hàm tìm nút có giá trị nhỏ nhất trong cây con có gốc là node
@@ -155,22 +158,27 @@ public class BinarySearchTree
             PrintByIDHelper(node.right); // In ra các nút trong cây con có gốc là con phải của nút hiện tại
         }
     }
-    // Phương thức tìm kiếm nút theo ID
-    // Tìm kiếm thông tin độc giả trong cây nhị phân tìm kiếm
-    public TreeNode Search(int maDocGia)
+    public TreeNode Search(int id)
     {
         TreeNode current = root;
-
-        while (current != null && current.id != maDocGia)
+        while (current != null)
         {
-            if (maDocGia < current.id)
+            if (id == current.id)
+            {
+                return current;
+            }
+            else if (id < current.id)
+            {
                 current = current.left;
+            }
             else
+            {
                 current = current.right;
+            }
         }
-
-        return current;
+        return null;
     }
+
 }
 
 
@@ -203,43 +211,10 @@ public class Sach
         ViTri = viTri;
         DocGiaMuon = docGiaMuon;
     }
-    public bool MuonSach(int maDocGia, int maSach)
-    {
-        BinarySearchTree bstDocGia = new BinarySearchTree();
-        TreeNode docGia = bstDocGia.Search(maDocGia);
-        if (docGia == null || docGia.trangThai == "0" || docGia.borrowedBooks.Count >= 3)
-            return false;
-        if (TrangThai == 0)
-        {
-            TrangThai = 1;
-            DocGiaMuon = docGia.ho + " " + docGia.ten;
-            NgayMuon = DateTime.Now;
-            docGia.borrowedBooks.Add(maSach.ToString());
-            return true;
-        }
-        return false;
-    }
-    public bool TraSach(int maDocGia, int maSach)
-    {
-        BinarySearchTree bstDocGia = new BinarySearchTree();
-        TreeNode docGia = bstDocGia.Search(maDocGia);
-        if (docGia == null || !docGia.borrowedBooks.Contains(maSach.ToString()))
-            return false;
-
-        if (TrangThai == 1)
-        {
-            TrangThai = 0;
-            DocGiaMuon = null;
-            NgayTra = DateTime.Now;
-            docGia.borrowedBooks.Remove(maSach.ToString());
-            return true;
-        }
-        return false;
-    }
 
 }
 
-    public class Node
+public class Node
 {
     public Sach data; // Dữ liệu của nút (một đối tượng Sach)
     public Node next; // Con trỏ tới nút tiếp theo
@@ -255,6 +230,28 @@ public class Sach
 public class ThuVien
 {
     public Node head = null; // Đầu của danh sách liên kết
+    BinarySearchTree bst = new BinarySearchTree();
+    private string maDocGia;
+
+    // Mảng lưu trữ các mã sách mà độc giả muốn mượn
+    private string[] maSachMuon = new string[3];
+    public void NhapThongTinMuonSach()
+    {
+        Console.Write("Nhap ma doc gia: ");
+        maDocGia = Console.ReadLine();
+
+        Console.WriteLine("Nhap cac ma sach muon (toi da 3 cuon): ");
+        for (int i = 0; i < maSachMuon.Length; i++)
+        {
+            Console.Write("Nhap ma sach muon thu {0} (nhap 'q' de ket thuc): ", i + 1);
+            string maSach = Console.ReadLine();
+            if (maSach == "q")
+            {
+                break;
+            }
+            maSachMuon[i] = maSach;
+        }
+    }
 
     // Hàm thêm một cuốn sách mới vào thư viện
     public Sach ThemSach()
@@ -437,29 +434,45 @@ public class ThuVien
         }
         return null;
     }
+    public void NhapMaSachMuon(BinarySearchTree tree)
+    {
+        TreeNode node;
+        Console.Write("Nhap ID doc gia: ");
+        int id = int.Parse(Console.ReadLine());
+        node = tree.Search(id);
+        Console.WriteLine("Nhap cac ma sach muon (toi da 3 cuon): ");
+        for (int i = 0; i < maSachMuon.Length; i++)
+        {
+            Console.Write("Nhap ma sach muon thu {0} (nhap 'q' de ket thuc): ", i + 1);
+            string maSach = Console.ReadLine();
+            if (maSach == "q")
+            {
+                break;
+            }
+            maSachMuon[i] = maSach;
+        }
+    }
 }
 
 
 
-    class Program
+class Program
 {
     BinarySearchTree bst = new BinarySearchTree();
     Random rnd = new Random();
     public void NhapTen()
     {
-        while (true)
-        {
-            Console.WriteLine("Nhap ho: ");
-            string ho = Console.ReadLine();
-            Console.WriteLine("Nhap ten: ");
-            string ten = Console.ReadLine();
-            Console.WriteLine("Nhap gioi tinh (Nam/Nu): ");
-            string gioitinh = Console.ReadLine();
-            Console.WriteLine("Nhap trang thai the (1: the mo / 0: the dang bi khoa): ");
-            string trangthai = Console.ReadLine();
-            bst.Insert(rnd.Next(1000, 9999), ho, ten, gioitinh, trangthai);
-            break;
-        }
+        Console.WriteLine("Nhap ho: ");
+        string ho = Console.ReadLine();
+        Console.WriteLine("Nhap ten: ");
+        string ten = Console.ReadLine();
+        Console.WriteLine("Nhap gioi tinh (Nam/Nu): ");
+        string gioitinh = Console.ReadLine();
+        Console.WriteLine("Nhap trang thai the (1: the mo / 0: the dang bi khoa): ");
+        string trangthai = Console.ReadLine();
+        int id = bst.Insert(0, ho, ten, gioitinh, trangthai); // Thêm độc giả vào cây và nhận lại ID của độc giả
+        Console.WriteLine("Da them doc gia co id " + id  + " vao thu vien.");
+
     }
     public void PrintByName()
     {
@@ -477,9 +490,11 @@ public class ThuVien
         ThuVien library = new ThuVien();
         Program program = new Program();
         BinarySearchTree tree = new BinarySearchTree();
-        Console.WriteLine(" ");
+        Sach sachMoi;
+       
         while (true)
         {
+
             Console.WriteLine("Chon chuc nang:");
             Console.WriteLine("1. Them doc gia.");
             Console.WriteLine("2. In danh sach doc gia theo id.");
@@ -489,12 +504,17 @@ public class ThuVien
             Console.WriteLine("6. Tim sach theo ten.");
             Console.WriteLine("7. Thay doi trang thai sach.");
             Console.WriteLine("8. Thay doi vi tri sach.");
+            Console.WriteLine("9. Muon sach.");
+            Console.WriteLine("10. Tra sach.");
             Console.Write("Chon: ");
             int choice = int.Parse(Console.ReadLine()); //Parse là một phương thức được sử dụng để chuyển đổi một chuỗi thành một kiểu dữ liệu số khác như int, long, double
+
+            Console.WriteLine(" ");
             switch (choice)
             {
                 case 1:
                     program.NhapTen();
+                    Console.WriteLine("Them doc gia thanh cong");
                     break;
                 case 2:
                     program.PrintById();
@@ -503,7 +523,7 @@ public class ThuVien
                     program.PrintByName();
                     break;
                 case 4:
-                    library.ThemSach();
+                    sachMoi = library.ThemSach(); // Thêm một cuốn sách mới vào thư viện
                     break;
                 case 5:
                     library.PrintList();
@@ -528,39 +548,11 @@ public class ThuVien
                     library.ThayDoiViTri(tenSach, vitri);
                     break;
                 case 9:
-                    bool tiepTucMuonSach = true;
-                    int maDocGia;
-                    int maSach;
-                    while (tiepTucMuonSach)
-                    {
-                        Console.WriteLine("Nhap ma doc gia: ");
-                        maDocGia = int.Parse(Console.ReadLine());
-                        TreeNode node = tree.Search(maDocGia);
-                        Console.WriteLine("Nhap ma sach: ");
-                        maSach = int.Parse(Console.ReadLine());
-                        library.LaySachTheoMa(maSach);
-                        bool muonThanhCong = library.ThemSach().MuonSach(maDocGia, maSach);
-                        Console.WriteLine(muonThanhCong ? "Muon sach thanh cong" : "Muon sach khong thanh cong");
-                        Console.WriteLine("Ban co muon tiep tuc muon sach? Nhap 'y' de tiep tuc hoac 'n' de thoat.");
-                        string luaChon = Console.ReadLine();
-                        if (luaChon.ToLower() == "n")
-                        {
-                            tiepTucMuonSach = false;
-                        }
-                    }
-                    break;
-
-                case 10:
-                    Console.WriteLine("Nhap ma doc gia: ");
-                    maDocGia = int.Parse(Console.ReadLine());
-                    Console.WriteLine("Nhap ma sach: ");
-                    
-                    library.LaySachTheoMa(maSach);
-                    bool traThanhCong = library.ThemSach().TraSach(maDocGia, maSach);
-                    Console.WriteLine(traThanhCong ? "Tra sach thanh cong" : "Tra sach khong thanh cong");
-                    break;
+                    library.NhapMaSachMuon(tree);
+                    break; 
             }
+            Console.WriteLine(" ");
         }
-        Console.WriteLine(" ");
+
     }
 }
