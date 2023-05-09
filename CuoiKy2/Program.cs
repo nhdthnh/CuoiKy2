@@ -440,75 +440,77 @@ public class ThuVien
     }
     public Sach LaySachTheoMa(int maSach)
     {
-        Node current = head;
-        while (current != null)
+        Node current = head; // Khởi tạo một biến current để duyệt qua danh sách liên kết
+        while (current != null) // Duyệt qua danh sách liên kết
         {
-            if (current.data.MaSach == maSach)
+            if (current.data.MaSach == maSach) // Nếu mã sách của node hiện tại trùng với mã sách cần tìm
             {
-                return current.data;
+                return current.data; // Trả về dữ liệu của node hiện tại
             }
-            current = current.next;
+            current = current.next; // Chuyển sang node tiếp theo trong danh sách liên kết
         }
-        return null;
+        return null; // Nếu không tìm thấy sách có mã sách cần tìm, trả về null
     }
+
     public void NhapMaSachMuon(BinarySearchTree tree)
     {
         TreeNode node;
-        Console.Write("Nhap ID doc gia: ");
-        int id = int.Parse(Console.ReadLine());
-        node = tree.Search(id);
-        Console.WriteLine("Nhap cac ma sach muon (toi da 3 cuon): ");
-        for (int i = 0; i < maSachMuon.Length; i++)
+        Console.Write("Nhap ID doc gia: "); // Nhập ID độc giả
+        int id = int.Parse(Console.ReadLine()); // Chuyển đổi ID độc giả từ chuỗi sang số nguyên
+        node = tree.Search(id); // Tìm kiếm độc giả trong cây nhị phân tìm kiếm
+        Console.WriteLine("Nhap cac ma sach muon (toi da 3 cuon): "); // Nhập các mã sách mượn
+        for (int i = 0; i < maSachMuon.Length; i++) // Duyệt qua mảng maSachMuon
         {
-            Console.Write("Nhap ma sach muon thu {0} (nhap 'q' de ket thuc): ", i + 1);
-            string maSach = Console.ReadLine();
-            if (maSach == "q")
+            Console.Write("Nhap ma sach muon thu {0} (nhap 'q' de ket thuc): ", i + 1); // Nhập mã sách mượn thứ i+1
+            string maSach = Console.ReadLine(); // Đọc mã sách từ bàn phím
+            if (maSach == "q") // Nếu người dùng nhập 'q'
             {
-                break;
+                break; // Thoát khỏi vòng lặp for
             }
-            maSachMuon[i] = maSach;
+            maSachMuon[i] = maSach; // Gán giá trị cho phần tử thứ i của mảng maSachMuon bằng mã sách vừa nhập
         }
     }
     public void LietKeSachDangMuon(BinarySearchTree tree)
     {
-        Console.Write("Nhap ID doc gia: ");
-        int id = int.Parse(Console.ReadLine());
-        TreeNode node = tree.Search(id);
-        Console.WriteLine("Cac sach dang muon cua doc gia co ID {0}: ", id);
-        foreach (string maSach in maSachMuon)
+        Console.Write("Nhap ID doc gia: "); // Nhập ID độc giả
+        int id = int.Parse(Console.ReadLine()); // Chuyển đổi ID độc giả từ chuỗi sang số nguyên
+        TreeNode node = tree.Search(id); // Tìm kiếm độc giả trong cây nhị phân tìm kiếm
+        Console.WriteLine("Cac sach dang muon cua doc gia co ID {0}: ", id); // In ra các sách đang mượn của độc giả có ID vừa nhập
+        foreach (string maSach in maSachMuon) // Duyệt qua mảng maSachMuon
         {
-            if (maSach != null)
+            if (maSach != null) // Nếu mã sách không rỗng
             {
-                Sach sach = LaySachTheoMa(int.Parse(maSach));
-                if (sach != null)
+                Sach sach = LaySachTheoMa(int.Parse(maSach)); // Tìm sách có mã sách bằng với mã sách trong mảng maSachMuon
+                if (sach != null) // Nếu tìm thấy sách
                 {
-                    Console.WriteLine("- {0}", sach.TenSach);
+                    Console.WriteLine("- {0}", sach.TenSach); // In ra tên sách
                 }
             }
         }
     }
+
     public void TraSach()
     {
-        Console.Write("Nhap ma doc gia: ");
-        string maDocGia = Console.ReadLine();
-        Console.Write("Nhap ma sach muon tra: ");
-        string maSachTra = Console.ReadLine();
+        Console.Write("Nhap ma doc gia: "); // Nhập mã độc giả
+        string maDocGia = Console.ReadLine(); // Đọc mã độc giả từ bàn phím
+        Console.Write("Nhap ma sach muon tra: "); // Nhập mã sách mượn trả
+        string maSachTra = Console.ReadLine(); // Đọc mã sách mượn trả từ bàn phím
 
-        Node current = head;
-        while (current != null)
+        Node current = head; // Khởi tạo một biến current để duyệt qua danh sách liên kết
+        while (current != null) // Duyệt qua danh sách liên kết
         {
-            if (current.data.MaSach.ToString() == maSachTra && current.data.DocGiaMuon == maDocGia)
+            if (current.data.MaSach.ToString() == maSachTra && current.data.DocGiaMuon == maDocGia) // Nếu mã sách và mã độc giả của node hiện tại trùng với mã sách và mã độc giả cần tìm
             {
-                current.data.TrangThai = 0;
-                current.data.DocGiaMuon = null;
-                current.data.NgayMuon = DateTime.MinValue;
-                current.data.NgayTra = DateTime.MinValue;
-                Console.WriteLine("Tra sach thanh cong.");
-                return;
+                current.data.TrangThai = 0; // Đặt trạng thái của sách thành 0 (chưa được mượn)
+                current.data.DocGiaMuon = null; // Xóa thông tin độc giả mượn
+                current.data.NgayMuon = DateTime.MinValue; // Xóa ngày mượn
+                current.data.NgayTra = DateTime.MinValue; // Xóa ngày trả
+                Console.WriteLine("Tra sach thanh cong."); // In ra thông báo trả sách thành công
+                return; // Thoát khỏi hàm TraSach()
             }
-            current = current.next;
+            current = current.next; // Chuyển sang node tiếp theo trong danh sách liên kết
         }
-        Console.WriteLine("Khong tim thay sach hoac doc gia khong muon sach nay.");
+        Console.WriteLine("Khong tim thay sach hoac doc gia khong muon sach nay."); // Nếu không tìm thấy sách hoặc độc giả không mượn sách này, in ra thông báo không tìm thấy sách hoặc độc giả không mượn sách này.
     }
 }
 
