@@ -368,17 +368,7 @@ public class ThuVien
                 Console.WriteLine("The loai: {0}", current.data.TheLoai);
                 Console.WriteLine("Trang thai: {0}", current.data.TrangThai);
                 Console.WriteLine("Vi tri: {0}", current.data.ViTri);
-                Console.WriteLine("Cac ma sach con trong thu vien:");
                 Node temp = head; // Bắt đầu từ đầu của danh sách liên kết
-                while (temp != null) // Trong khi nút hiện tại không rỗng
-                {
-                    if (temp.data.TenSach == tenSach && temp.data.MaSach != current.data.MaSach) // Nếu tên sách của nút hiện tại trùng với tên sách cần tìm và mã sách của nút hiện tại khác với mã sách của nút đã tìm thấy trước đó
-                    {
-                        Console.WriteLine("{0}", temp.data.MaSach); // In ra mã sách của nút hiện tại
-                    }
-                    temp = temp.next; // Di chuyển sang nút tiếp theo của nút hiện tại
-                }
-
                 found = true;
                 break;
             }
@@ -489,136 +479,131 @@ public class ThuVien
         }
     }
 
-    public void TraSach()
+    public void XoaSachTra(BinarySearchTree tree)
     {
-        Console.Write("Nhap ma doc gia: "); // Nhập mã độc giả
-        string maDocGia = Console.ReadLine(); // Đọc mã độc giả từ bàn phím
-        Console.Write("Nhap ma sach muon tra: "); // Nhập mã sách mượn trả
-        string maSachTra = Console.ReadLine(); // Đọc mã sách mượn trả từ bàn phím
-
-        Node current = head; // Khởi tạo một biến current để duyệt qua danh sách liên kết
-        while (current != null) // Duyệt qua danh sách liên kết
-        {
-            if (current.data.MaSach.ToString() == maSachTra && current.data.DocGiaMuon == maDocGia) // Nếu mã sách và mã độc giả của node hiện tại trùng với mã sách và mã độc giả cần tìm
+        Console.Write("Nhap ID doc gia: "); // Nhập ID độc giả
+        int id = int.Parse(Console.ReadLine()); // Chuyển đổi ID độc giả từ chuỗi sang số nguyên
+        TreeNode node = tree.Search(id); // Tìm kiếm độc giả trong cây nhị phân tìm kiếm
+        Console.WriteLine("Nhap ma sach muon tra: "); // Nhập mã sách muốn trả
+        string maSach = Console.ReadLine(); // Đọc mã sách từ bàn phím
+            for (int i = 0; i < maSachMuon.Length; i++) // Duyệt qua mảng maSachMuon
             {
-                current.data.TrangThai = 0; // Đặt trạng thái của sách thành 0 (chưa được mượn)
-                current.data.DocGiaMuon = null; // Xóa thông tin độc giả mượn
-                current.data.NgayMuon = DateTime.MinValue; // Xóa ngày mượn
-                current.data.NgayTra = DateTime.MinValue; // Xóa ngày trả
-                Console.WriteLine("Tra sach thanh cong."); // In ra thông báo trả sách thành công
-                return; // Thoát khỏi hàm TraSach()
+                if (maSachMuon[i] == maSach) // Nếu tìm thấy mã sách trong mảng maSachMuon
+                {
+                    maSachMuon[i] = null; // Xóa mã sách khỏi mảng maSachMuon
+                    Console.WriteLine("Da xoa sach co ma so {0} khoi danh sach muon.", maSach); // Thông báo xóa sách thành công
+                    return; // Thoát khỏi phương thức
+                }
             }
-            current = current.next; // Chuyển sang node tiếp theo trong danh sách liên kết
-        }
-        Console.WriteLine("Khong tim thay sach hoac doc gia khong muon sach nay."); // Nếu không tìm thấy sách hoặc độc giả không mượn sách này, in ra thông báo không tìm thấy sách hoặc độc giả không mượn sách này.
+            Console.WriteLine("Khong tim thay sach co ma so {0} trong danh sach muon.", maSach); // Thông báo không tìm thấy sách cần trả
     }
 }
 
 
 
-class Program
-{
-    BinarySearchTree bst = new BinarySearchTree();
-    Random rnd = new Random();
-    public void NhapTen()
+    class Program
     {
-        Console.Write("Nhap ho: ");
-        string ho = Console.ReadLine();
-        Console.Write("Nhap ten: ");
-        string ten = Console.ReadLine();
-        Console.Write("Nhap gioi tinh (Nam/Nu): ");
-        string gioitinh = Console.ReadLine();
-        Console.Write("Nhap trang thai the (1: the mo / 0: the dang bi khoa): ");
-        string trangthai = Console.ReadLine();
-        int id = bst.Insert(0, ho, ten, gioitinh, trangthai); // Thêm độc giả vào cây và nhận lại ID của độc giả
-        Console.WriteLine("Da them doc gia co id " + id  + " vao thu vien.");
-
-    }
-    public void PrintByName()
-    {
-        Console.WriteLine("Print by name:");
-        bst.PrintByNameAscending();
-    }
-    public void PrintById()
-    {
-        Console.WriteLine("\nPrint by ID:");
-        bst.PrintByID();
-    }
-
-    static void Main(string[] args)
-    {
-        ThuVien library = new ThuVien();
-        Program program = new Program();
-        BinarySearchTree tree = new BinarySearchTree();
-        Sach sachMoi;
-       
-        while (true)
+        BinarySearchTree bst = new BinarySearchTree();
+        Random rnd = new Random();
+        public void NhapTen()
         {
+            Console.Write("Nhap ho: ");
+            string ho = Console.ReadLine();
+            Console.Write("Nhap ten: ");
+            string ten = Console.ReadLine();
+            Console.Write("Nhap gioi tinh (Nam/Nu): ");
+            string gioitinh = Console.ReadLine();
+            Console.Write("Nhap trang thai the (1: the mo / 0: the dang bi khoa): ");
+            string trangthai = Console.ReadLine();
+            int id = bst.Insert(0, ho, ten, gioitinh, trangthai); // Thêm độc giả vào cây và nhận lại ID của độc giả
+            Console.WriteLine("Da them doc gia co id " + id + " vao thu vien.");
 
-            Console.WriteLine("Chon chuc nang:");
-            Console.WriteLine("1. Them doc gia.");
-            Console.WriteLine("2. In danh sach doc gia theo id.");
-            Console.WriteLine("3. In danh sach doc gia theo ten.");
-            Console.WriteLine("4. Them dau sach.");
-            Console.WriteLine("5. In ra cac dau sach theo ten.");
-            Console.WriteLine("6. Tim sach theo ten.");
-            Console.WriteLine("7. Thay doi trang thai sach.");
-            Console.WriteLine("8. Thay doi vi tri sach.");
-            Console.WriteLine("9. Muon sach.");
-            Console.WriteLine("10. Liet ke sach dang muon.");
-            Console.WriteLine("11. Tra sach.");
-            Console.Write("Chon: ");
-            int choice = int.Parse(Console.ReadLine()); //Parse là một phương thức được sử dụng để chuyển đổi một chuỗi thành một kiểu dữ liệu số khác như int, long, double
-
-            Console.WriteLine(" ");
-            switch (choice)
-            {
-                case 1:
-                    program.NhapTen();
-                    break;
-                case 2:
-                    program.PrintById();
-                    break;
-                case 3:
-                    program.PrintByName();
-                    break;
-                case 4:
-                    sachMoi = library.ThemSach(); // Thêm một cuốn sách mới vào thư viện
-                    break;
-                case 5:
-                    library.PrintList();
-                    break;
-                case 6:
-                    Console.Write("Nhap ten sach can tim: ");
-                    string tenSach = Console.ReadLine();
-                    library.TimSachTheoTen(tenSach);
-                    break;
-                case 7:
-                    Console.WriteLine("Nhap ten sach can thay doi trang thai");
-                    tenSach = Console.ReadLine();
-                    Console.WriteLine("Nhap trang thai");
-                    int trangthai = int.Parse(Console.ReadLine());
-                    library.ThayDoiTrangThai(tenSach, trangthai);
-                    break;
-                case 8:
-                    Console.WriteLine("Nhap ten sach can thay doi vi tri");
-                    tenSach = Console.ReadLine();
-                    Console.WriteLine("Nhap vi tri");
-                    string vitri = Console.ReadLine();
-                    library.ThayDoiViTri(tenSach, vitri);
-                    break;
-                case 9:
-                    library.NhapMaSachMuon(tree);
-                    break;
-                case 10:
-                    library.LietKeSachDangMuon(tree);
-                    break;
-                case 11:
-                    library.TraSach();
-                    break;
-            }
-            Console.WriteLine(" ");
+        }
+        public void PrintByName()
+        {
+            Console.WriteLine("Print by name:");
+            bst.PrintByNameAscending();
+        }
+        public void PrintById()
+        {
+            Console.WriteLine("\nPrint by ID:");
+            bst.PrintByID();
         }
 
-    }
+        static void Main(string[] args)
+        {
+            ThuVien library = new ThuVien();
+            Program program = new Program();
+            BinarySearchTree tree = new BinarySearchTree();
+            Sach sachMoi;
+
+            while (true)
+            {
+
+                Console.WriteLine("Chon chuc nang:");
+                Console.WriteLine("1. Them doc gia.");
+                Console.WriteLine("2. In danh sach doc gia theo id.");
+                Console.WriteLine("3. In danh sach doc gia theo ten.");
+                Console.WriteLine("4. Them dau sach.");
+                Console.WriteLine("5. In ra cac dau sach theo ten.");
+                Console.WriteLine("6. Tim sach theo ten.");
+                Console.WriteLine("7. Thay doi trang thai sach.");
+                Console.WriteLine("8. Thay doi vi tri sach.");
+                Console.WriteLine("9. Muon sach.");
+                Console.WriteLine("10. Liet ke sach dang muon.");
+                Console.WriteLine("11. Tra sach.");
+                Console.Write("Chon: ");
+                int choice = int.Parse(Console.ReadLine()); //Parse là một phương thức được sử dụng để chuyển đổi một chuỗi thành một kiểu dữ liệu số khác như int, long, double
+
+                Console.WriteLine(" ");
+                switch (choice)
+                {
+                    case 1:
+                        program.NhapTen();
+                        break;
+                    case 2:
+                        program.PrintById();
+                        break;
+                    case 3:
+                        program.PrintByName();
+                        break;
+                    case 4:
+                        sachMoi = library.ThemSach(); // Thêm một cuốn sách mới vào thư viện
+                        break;
+                    case 5:
+                        library.PrintList();
+                        break;
+                    case 6:
+                        Console.Write("Nhap ten sach can tim: ");
+                        string tenSach = Console.ReadLine();
+                        library.TimSachTheoTen(tenSach);
+                        break;
+                    case 7:
+                        Console.WriteLine("Nhap ten sach can thay doi trang thai");
+                        tenSach = Console.ReadLine();
+                        Console.WriteLine("Nhap trang thai");
+                        int trangthai = int.Parse(Console.ReadLine());
+                        library.ThayDoiTrangThai(tenSach, trangthai);
+                        break;
+                    case 8:
+                        Console.WriteLine("Nhap ten sach can thay doi vi tri");
+                        tenSach = Console.ReadLine();
+                        Console.WriteLine("Nhap vi tri");
+                        string vitri = Console.ReadLine();
+                        library.ThayDoiViTri(tenSach, vitri);
+                        break;
+                    case 9:
+                        library.NhapMaSachMuon(tree);
+                        break;
+                    case 10:
+                        library.LietKeSachDangMuon(tree);
+                        break;
+                    case 11:
+                        library.XoaSachTra(tree);
+                        break;
+                }
+                Console.WriteLine(" ");
+            }
+
+        }
 }
