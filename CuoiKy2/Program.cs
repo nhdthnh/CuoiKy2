@@ -452,11 +452,29 @@ public class ThuVien
             maSachMuon[i] = maSach;
         }
     }
+    public void LietKeSachDangMuon(BinarySearchTree tree)
+    {
+        Console.Write("Nhap ID doc gia: ");
+        int id = int.Parse(Console.ReadLine());
+        TreeNode node = tree.Search(id);
+        Console.WriteLine("Cac sach dang muon cua doc gia co ID {0}: ", id);
+        foreach (string maSach in maSachMuon)
+        {
+            if (maSach != null)
+            {
+                Sach sach = LaySachTheoMa(int.Parse(maSach));
+                if (sach != null)
+                {
+                    Console.WriteLine("- {0}", sach.TenSach);
+                }
+            }
+        }
+    }
 }
 
 
 
-class Program
+    class Program
 {
     BinarySearchTree bst = new BinarySearchTree();
     Random rnd = new Random();
@@ -505,7 +523,7 @@ class Program
             Console.WriteLine("7. Thay doi trang thai sach.");
             Console.WriteLine("8. Thay doi vi tri sach.");
             Console.WriteLine("9. Muon sach.");
-            Console.WriteLine("10. Tra sach.");
+            Console.WriteLine("10. Liet ke sach dang muon.");
             Console.Write("Chon: ");
             int choice = int.Parse(Console.ReadLine()); //Parse là một phương thức được sử dụng để chuyển đổi một chuỗi thành một kiểu dữ liệu số khác như int, long, double
 
@@ -549,7 +567,10 @@ class Program
                     break;
                 case 9:
                     library.NhapMaSachMuon(tree);
-                    break; 
+                    break;
+                case 10:
+                    library.LietKeSachDangMuon(tree);
+                    break;
             }
             Console.WriteLine(" ");
         }
