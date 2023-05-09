@@ -88,39 +88,37 @@ public class BinarySearchTree
         return node; // Trả về nút có giá trị nhỏ nhất
     }
     // Hàm in ra các nút trong cây con có gốc là node theo thứ tự tăng dần của tên
-    private void PrintByNameHelper(TreeNode node)
-    {
-        if (node.left != null) // Nếu con trái của nút hiện tại không rỗng
-        {
-            PrintByNameHelper(node.left); // In ra các nút trong cây con có gốc là con trái của nút hiện tại
-        }
-        Console.WriteLine("ID: {0}, Ho: {1}, Ten: {2}", node.id, node.ho, node.ten); // In ra thông tin của nút hiện tại
-        if (node.right != null) // Nếu con phải của nút hiện tại không rỗng
-        {
-            PrintByNameHelper(node.right); // In ra các nút trong cây con có gốc là con phải của nút hiện tại
-        }
-    }
-
-    // Hàm in ra các nút trong cây theo thứ tự tăng dần của tên
     public void PrintByNameAscending()
     {
         if (root != null) // Nếu cây không rỗng
         {
-            PrintByNameAscendingHelper(root); // In ra các nút trong cây có gốc là root
+            List<TreeNode> nodes = new List<TreeNode>();
+            BuildNodeList(root, nodes); // Xây dựng danh sách các nút trong cây
+            nodes.Sort((a, b) => a.ten.CompareTo(b.ten)); // Sắp xếp danh sách các nút theo thứ tự tên từ A-Z
+            PrintNodes(nodes); // In ra danh sách các nút đã sắp xếp
         }
     }
 
-    // Hàm in ra các nút trong cây con có gốc là node theo thứ tự tăng dần của tên
-    private void PrintByNameAscendingHelper(TreeNode node)
+    // Hàm xây dựng danh sách các nút trong cây con có gốc là node
+    private void BuildNodeList(TreeNode node, List<TreeNode> nodes)
     {
         if (node.left != null) // Nếu con trái của nút hiện tại không rỗng
         {
-            PrintByNameAscendingHelper(node.left); // In ra các nút trong cây con có gốc là con trái của nút hiện tại
+            BuildNodeList(node.left, nodes); // Xây dựng danh sách các nút trong cây con có gốc là con trái của nút hiện tại
         }
-        Console.WriteLine("ID: {0}, Ho: {1}, Ten: {2}", node.id, node.ho, node.ten); // In ra thông tin của nút hiện tại
+        nodes.Add(node); // Thêm nút hiện tại vào danh sách
         if (node.right != null) // Nếu con phải của nút hiện tại không rỗng
         {
-            PrintByNameAscendingHelper(node.right); // In ra các nút trong cây con có gốc là con phải của nút hiện tại
+            BuildNodeList(node.right, nodes); // Xây dựng danh sách các nút trong cây con có gốc là con phải của nút hiện tại
+        }
+    }
+
+    // Hàm in ra thông tin của các nút trong danh sách
+    private void PrintNodes(List<TreeNode> nodes)
+    {
+        foreach (TreeNode node in nodes)
+        {
+            Console.WriteLine("ID: {0}, Ho: {1}, Ten: {2}", node.id, node.ho, node.ten); // In ra thông tin của nút
         }
     }
 
@@ -178,7 +176,26 @@ public class BinarySearchTree
         }
         return null;
     }
-
+    public string GetTrangThai(int id)
+    {
+        TreeNode current = root; // Bắt đầu từ gốc của cây
+        while (current != null)
+        {
+            if (id < current.id) // Nếu ID cần tìm nhỏ hơn ID của nút hiện tại
+            {
+                current = current.left; // Di chuyển sang con trái của nút hiện tại
+            }
+            else if (id > current.id) // Nếu ID cần tìm lớn hơn ID của nút hiện tại
+            {
+                current = current.right; // Di chuyển sang con phải của nút hiện tại
+            }
+            else // Nếu ID cần tìm bằng với ID của nút hiện tại
+            {
+                return current.trangThai; // Trả về trạng thái của nút hiện tại
+            }
+        }
+        return null; // Trả về null nếu không tìm thấy nút có ID cần tìm trong cây
+    }
 }
 
 
@@ -470,23 +487,46 @@ public class ThuVien
             }
         }
     }
+    public void TraSach()
+    {
+        Console.Write("Nhap ma doc gia: ");
+        string maDocGia = Console.ReadLine();
+        Console.Write("Nhap ma sach muon tra: ");
+        string maSachTra = Console.ReadLine();
+
+        Node current = head;
+        while (current != null)
+        {
+            if (current.data.MaSach.ToString() == maSachTra && current.data.DocGiaMuon == maDocGia)
+            {
+                current.data.TrangThai = 0;
+                current.data.DocGiaMuon = null;
+                current.data.NgayMuon = DateTime.MinValue;
+                current.data.NgayTra = DateTime.MinValue;
+                Console.WriteLine("Tra sach thanh cong.");
+                return;
+            }
+            current = current.next;
+        }
+        Console.WriteLine("Khong tim thay sach hoac doc gia khong muon sach nay.");
+    }
 }
 
 
 
-    class Program
+class Program
 {
     BinarySearchTree bst = new BinarySearchTree();
     Random rnd = new Random();
     public void NhapTen()
     {
-        Console.WriteLine("Nhap ho: ");
+        Console.Write("Nhap ho: ");
         string ho = Console.ReadLine();
-        Console.WriteLine("Nhap ten: ");
+        Console.Write("Nhap ten: ");
         string ten = Console.ReadLine();
-        Console.WriteLine("Nhap gioi tinh (Nam/Nu): ");
+        Console.Write("Nhap gioi tinh (Nam/Nu): ");
         string gioitinh = Console.ReadLine();
-        Console.WriteLine("Nhap trang thai the (1: the mo / 0: the dang bi khoa): ");
+        Console.Write("Nhap trang thai the (1: the mo / 0: the dang bi khoa): ");
         string trangthai = Console.ReadLine();
         int id = bst.Insert(0, ho, ten, gioitinh, trangthai); // Thêm độc giả vào cây và nhận lại ID của độc giả
         Console.WriteLine("Da them doc gia co id " + id  + " vao thu vien.");
@@ -524,6 +564,7 @@ public class ThuVien
             Console.WriteLine("8. Thay doi vi tri sach.");
             Console.WriteLine("9. Muon sach.");
             Console.WriteLine("10. Liet ke sach dang muon.");
+            Console.WriteLine("11. Tra sach.");
             Console.Write("Chon: ");
             int choice = int.Parse(Console.ReadLine()); //Parse là một phương thức được sử dụng để chuyển đổi một chuỗi thành một kiểu dữ liệu số khác như int, long, double
 
@@ -532,7 +573,6 @@ public class ThuVien
             {
                 case 1:
                     program.NhapTen();
-                    Console.WriteLine("Them doc gia thanh cong");
                     break;
                 case 2:
                     program.PrintById();
@@ -570,6 +610,9 @@ public class ThuVien
                     break;
                 case 10:
                     library.LietKeSachDangMuon(tree);
+                    break;
+                case 11:
+                    library.TraSach();
                     break;
             }
             Console.WriteLine(" ");
