@@ -158,23 +158,23 @@ public class BinarySearchTree
     }
     public TreeNode Search(int id)
     {
-        TreeNode current = root;
-        while (current != null)
+        TreeNode current = root; // Khởi tạo một biến current để duyệt qua cây nhị phân tìm kiếm
+        while (current != null) // Duyệt qua cây nhị phân tìm kiếm
         {
-            if (id == current.id)
+            if (id == current.id) // Nếu ID của node hiện tại trùng với ID cần tìm
             {
-                return current;
+                return current; // Trả về node hiện tại
             }
-            else if (id < current.id)
+            else if (id < current.id) // Nếu ID cần tìm nhỏ hơn ID của node hiện tại
             {
-                current = current.left;
+                current = current.left; // Chuyển sang node con bên trái của node hiện tại
             }
-            else
+            else // Nếu ID cần tìm lớn hơn ID của node hiện tại
             {
-                current = current.right;
+                current = current.right; // Chuyển sang node con bên phải của node hiện tại
             }
         }
-        return null;
+        return null; // Nếu không tìm thấy node có ID cần tìm, trả về null
     }
     public string GetTrangThai(int id)
     {
