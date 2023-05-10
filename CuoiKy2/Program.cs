@@ -254,23 +254,7 @@ public class ThuVien
 
     // Mảng lưu trữ các mã sách mà độc giả muốn mượn
     private string[] maSachMuon = new string[3];
-    public void NhapThongTinMuonSach()
-    {
-        Console.Write("Nhap ma doc gia: ");
-        maDocGia = Console.ReadLine();
-
-        Console.WriteLine("Nhap cac ma sach muon (toi da 3 cuon): ");
-        for (int i = 0; i < maSachMuon.Length; i++)
-        {
-            Console.Write("Nhap ma sach muon thu {0} (nhap 'q' de ket thuc): ", i + 1);
-            string maSach = Console.ReadLine();
-            if (maSach == "q")
-            {
-                break;
-            }
-            maSachMuon[i] = maSach;
-        }
-    }
+   
 
     // Hàm thêm một cuốn sách mới vào thư viện
     public Sach ThemSach()
