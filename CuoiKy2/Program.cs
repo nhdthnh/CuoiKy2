@@ -40,6 +40,7 @@ public class BinarySearchTree
     // Hàm chèn một nút mới vào cây nhị phân tìm kiếm
     public int Insert(int id, string ho, string ten, string phai, string trangThai)
     {
+
         Random random = new Random();
         id = random.Next(100000, 999999); // Tạo id ngẫu nhiên từ 100000 đến 999999
         TreeNode newNode = new TreeNode(id, ho, ten, phai, trangThai); // Tạo một nút mới
@@ -76,6 +77,7 @@ public class BinarySearchTree
             }
         }
         return id;
+       
     }
 
     // Hàm tìm nút có giá trị nhỏ nhất trong cây con có gốc là node
