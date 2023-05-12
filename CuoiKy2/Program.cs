@@ -213,9 +213,6 @@ public class Sach
     public int TrangThai { get; set; } // Trạng thái (0: cho mượn được, 1: đã có độc giả mượn, 2: sách đã thanh lý)
     public string ViTri { get; set; } // Vị trí
     public string DocGiaMuon { get; set; } // Tên độc giả mượn sách
-    public DateTime NgayMuon { get; set; }
-    public DateTime NgayTra { get; set; }
-    public int SoLuong { get; set; } //Thêm thuộc tính số lượng sách
 
     // Hàm khởi tạo cho lớp Sach
     public Sach(string tenSach, string tacGia, int namXuatBan, int soTrang, string theLoai, string viTri, int trangThai, string docGiaMuon = null)
@@ -487,7 +484,7 @@ public class ThuVien
 
 
 
-    class Program
+class Program
     {
         BinarySearchTree bst = new BinarySearchTree();
         Random rnd = new Random();
@@ -531,7 +528,7 @@ public class ThuVien
                 Console.WriteLine("2. In danh sach doc gia theo id.");
                 Console.WriteLine("3. In danh sach doc gia theo ten.");
                 Console.WriteLine("4. Them dau sach.");
-                Console.WriteLine("5. In ra cac dau sach theo ten.");
+                Console.WriteLine("5. In ra cac dau sach.");
                 Console.WriteLine("6. Tim sach theo ten.");
                 Console.WriteLine("7. Thay doi trang thai sach.");
                 Console.WriteLine("8. Thay doi vi tri sach.");
