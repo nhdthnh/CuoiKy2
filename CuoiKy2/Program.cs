@@ -158,6 +158,7 @@ public class BinarySearchTree
             PrintByIDHelper(node.right); // In ra các nút trong cây con có gốc là con phải của nút hiện tại
         }
     }
+    //kiếm cái id của động giả
     public TreeNode Search(int id)
     {
         TreeNode current = root; // Khởi tạo một biến current để duyệt qua cây nhị phân tìm kiếm
@@ -178,26 +179,7 @@ public class BinarySearchTree
         }
         return null; // Nếu không tìm thấy node có ID cần tìm, trả về null
     }
-    public string GetTrangThai(int id)
-    {
-        TreeNode current = root; // Bắt đầu từ gốc của cây
-        while (current != null)
-        {
-            if (id < current.id) // Nếu ID cần tìm nhỏ hơn ID của nút hiện tại
-            {
-                current = current.left; // Di chuyển sang con trái của nút hiện tại
-            }
-            else if (id > current.id) // Nếu ID cần tìm lớn hơn ID của nút hiện tại
-            {
-                current = current.right; // Di chuyển sang con phải của nút hiện tại
-            }
-            else // Nếu ID cần tìm bằng với ID của nút hiện tại
-            {
-                return current.trangThai; // Trả về trạng thái của nút hiện tại
-            }
-        }
-        return null; // Trả về null nếu không tìm thấy nút có ID cần tìm trong cây
-    }
+
 }
 
 
@@ -290,37 +272,6 @@ public class ThuVien
         return sach;
     }
 
-    // Hàm sắp xếp các cuốn sách trong thư viện theo thứ tự tăng dần của tên sách
-    public void SortByName()
-    {
-        Node current = head; // Bắt đầu từ đầu của danh sách liên kết
-        Node index = null;
-        Sach temp;
-
-        if (head == null) // Nếu danh sách liên kết rỗng
-        {
-            return;
-        }
-        else
-        {
-            while (current != null) // Trong khi nút hiện tại không rỗng
-            {
-                index = current.next;
-
-                while (index != null) // Trong khi con trỏ tới nút tiếp theo của nút hiện tại không rỗng
-                {
-                    if (string.Compare(current.data.TenSach, index.data.TenSach) > 0) // Nếu tên sách của nút hiện tại lớn hơn tên sách của nút tiếp theo
-                    {
-                        temp = current.data;
-                        current.data = index.data;
-                        index.data = temp;
-                    }
-                    index = index.next;
-                }
-                current = current.next;
-            }
-        }
-    }
     // Hàm in ra danh sách các cuốn sách trong thư viện
     public void PrintList()
     {
@@ -411,6 +362,8 @@ public class ThuVien
             Console.WriteLine("Khong tim thay sach co ten {0} trong thu vien.", tenSach);
         }
     }
+
+    //kiếm mã sách tương tự như kiếm id độc giả
     public Sach LaySachTheoMa(int maSach)
     {
         Node current = head; // Khởi tạo một biến current để duyệt qua danh sách liên kết
