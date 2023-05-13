@@ -79,16 +79,6 @@ public class BinarySearchTree
         return id;
        
     }
-
-    // Hàm tìm nút có giá trị nhỏ nhất trong cây con có gốc là node
-    private TreeNode FindMinNode(TreeNode node)
-    {
-        while (node.left != null) // Trong khi con trái của nút hiện tại không rỗng
-        {
-            node = node.left; // Di chuyển sang con trái của nút hiện tại
-        }
-        return node; // Trả về nút có giá trị nhỏ nhất
-    }
     // Hàm in ra các nút trong cây con có gốc là node theo thứ tự tăng dần của tên
     public void PrintByNameAscending()
     {
@@ -144,7 +134,6 @@ public class BinarySearchTree
             PrintByIDHelper(root); // In ra các nút trong cây có gốc là root
         }
     }
-
     // Hàm in ra các nút trong cây con có gốc là node theo thứ tự tăng dần của ID
     private void PrintByIDHelper(TreeNode node)
     {
@@ -192,12 +181,11 @@ public class Sach
     public int NamXuatBan { get; set; } // Năm xuất bản
     public string TheLoai { get; set; } // Thể loại
     public int SoTrang { get; set; } // Số trang
-    public int TrangThai { get; set; } // Trạng thái (0: cho mượn được, 1: đã có độc giả mượn, 2: sách đã thanh lý)
+    public int TrangThai { get; set; } // Trạng thái (0: đã có độc giả mượn, 1: mượn được)
     public string ViTri { get; set; } // Vị trí
-    public string DocGiaMuon { get; set; } // Tên độc giả mượn sách
 
     // Hàm khởi tạo cho lớp Sach
-    public Sach(string tenSach, string tacGia, int namXuatBan, int soTrang, string theLoai, string viTri, int trangThai, string docGiaMuon = null)
+    public Sach(string tenSach, string tacGia, int namXuatBan, int soTrang, string theLoai, string viTri, int trangThai)
     {
         MaSach = new Random().Next(100000, 999999); // Tạo một mã sách ngẫu nhiên
         TenSach = tenSach;
@@ -207,7 +195,6 @@ public class Sach
         SoTrang = soTrang;
         TrangThai = trangThai;
         ViTri = viTri;
-        DocGiaMuon = docGiaMuon;
     }
 
 }
@@ -382,7 +369,7 @@ public class ThuVien
     {
         TreeNode node;
         Console.Write("Nhap ID doc gia: "); // Nhập ID độc giả
-        int id = int.Parse(Console.ReadLine()); // Chuyển đổi ID độc giả từ chuỗi sang số nguyên
+        int id = int.Parse(Console.ReadLine()); // Chuyển đổi ID độc giả số nguyên sang chuỗi
         node = tree.Search(id); // Tìm kiếm độc giả trong cây nhị phân tìm kiếm
         Console.WriteLine("Nhap cac ma sach muon (toi da 3 cuon): "); // Nhập các mã sách mượn
         for (int i = 0; i < maSachMuon.Length; i++) // Duyệt qua mảng maSachMuon
@@ -436,7 +423,6 @@ public class ThuVien
 }
 
 
-
 class Program
     {
         BinarySearchTree bst = new BinarySearchTree();
@@ -488,6 +474,7 @@ class Program
                 Console.WriteLine("9. Muon sach.");
                 Console.WriteLine("10. Liet ke sach dang muon.");
                 Console.WriteLine("11. Tra sach.");
+                Console.WriteLine("12. Thoat");
                 Console.Write("Chon: ");
                 int choice = int.Parse(Console.ReadLine()); //Parse là một phương thức được sử dụng để chuyển đổi một chuỗi thành một kiểu dữ liệu số khác như int, long, double
 
@@ -537,6 +524,9 @@ class Program
                     case 11:
                         library.XoaSachTra(tree);
                         break;
+                case 12:
+                    Environment.Exit(0);
+                    break;
                 }
                 Console.WriteLine(" ");
             }
