@@ -491,7 +491,7 @@ class Program
                         program.PrintByName();
                         break;
                     case 4:
-                        sachMoi = library.ThemSach(); // Thêm một cuốn sách mới vào thư viện
+                        library.ThemSach(); // Thêm một cuốn sách mới vào thư viện
                         break;
                     case 5:
                         library.PrintList();
